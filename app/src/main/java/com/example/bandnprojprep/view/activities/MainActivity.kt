@@ -20,7 +20,6 @@ import java.util.ArrayList
 class MainActivity : AppCompatActivity() {
 
     val TAG: String = "FRANK "
-    private var itemsList: ArrayList<Items> = ArrayList()
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RvAdapter
 
@@ -30,8 +29,6 @@ class MainActivity : AppCompatActivity() {
 
         linearLayoutManager = LinearLayoutManager(this)
         rv_bookView.layoutManager = linearLayoutManager
-        adapter = RvAdapter(itemsList)
-        rv_bookView.adapter = adapter
 
         this.btn_search.setOnClickListener(View.OnClickListener {
             displayProgressDialog()
@@ -49,15 +46,19 @@ class MainActivity : AppCompatActivity() {
                     if (pDialog != null && pDialog!!.isShowing()) {
                         pDialog.dismiss()
                     }
-                    itemsList = response.body()!!.items
-                    Log.d("MainActivity", "" + list.size)
+                    val itemsList: List<Items> = response.body()!!.items
+                    Log.d("MainActivity", "" + itemsList.size)
+                    //to be taken out after debugging
                     var msg: String = ""
-                    for (item: Items in list.iterator()) {
+                    for (item: Items in itemsList.iterator()) {
                         msg = msg + item.volumeInfo.title + "\n"
                     }
+                    //see above-----------------------
                     adapter = RvAdapter(itemsList)
                     rv_bookView.adapter = adapter
+                    //to be taken out after debugging
                     Toast.makeText(this@MainActivity, "List of Titles  \n  " + msg, Toast.LENGTH_LONG).show()
+                    //see above-----------------------
                 }
 
             }

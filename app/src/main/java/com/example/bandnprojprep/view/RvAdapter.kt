@@ -8,46 +8,63 @@ import com.example.bandnprojprep.R
 import com.squareup.picasso.Picasso
 import Items
 import com.example.bandnprojprep.utils.inflate
+import kotlinx.android.synthetic.main.rv_item.view.*
 
-class RvAdapter(private val items: ArrayList<Items>) : RecyclerView.Adapter<RvAdapter.ViewHolder>(){
+class RvAdapter(private val items: List<Items>) : RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.PhotoHolder {
-        val inflatedView = parent.inflate(R.layout.recycler_item_row, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RvAdapter.ViewHolder {
+        val inflatedView = parent.inflate(R.layout.rv_item, false)
         return ViewHolder(inflatedView)
     }
 
-    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: RvAdapter.ViewHolder, position: Int) {
         val item = items[position]
         holder.bindItem(item)
     }
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    override fun getItemCount() = items.size
+
+    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
         private var view: View = v
-        private var item: Items? = null
 
-        fun bindItem(items: Items) {
-            this.item = item
-            Picasso.with(view.context).load(photo.url).into(view.itemImage)
-            view.itemDate.text = photo.humanDate
-            view.itemDescription.text = photo.explanation
+        fun bindItem(item: Items) {
+            val itemUrl = item.volumeInfo.imageLinks.smallThumbnail
+            Picasso.with(view.context).load(itemUrl).into(view.iv_bookImage)
+            view.tv_title.text = item.volumeInfo.title
+            // There can be more than one author for a book.
+            // Thus, we need to account for a list of authors.
+            // Authors is always presented as a list even if it's only one.
+            var authorList: Int = item.volumeInfo.authors.size
+            // Most books have one author, so don't waste time on iteration.
+            var authors = ""
+            if (authorList == 1) {
+                authors = item.volumeInfo.authors[0]
+            } else {
+                for (authorName in item.volumeInfo.authors) {
+                    authors += when (authorName == item.volumeInfo.authors.last()) {
+                        true -> authorName
+                        false -> "$authorName, "
+                    }
+                }
+            }
+            view.tv_author.text = authors
         }
 
-        init {
-            v.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View) {
-            val context = itemView.context
-            val showPhotoIntent = Intent(context, PhotoActivity::class.java)
-            showPhotoIntent.putExtra(PHOTO_KEY, photo)
-            context.startActivity(showPhotoIntent)
-        }
-
-        companion object {
-            private val PHOTO_KEY = "PHOTO"
-        }
+//        init {
+//            v.setOnClickListener(this)
+//        }
+//for future reference
+//        override fun onClick(v: View) {
+//            val context = itemView.context
+//            val showActivityIntent = Intent(context, nextActivity::class.java)
+//            showActivityIntent.putExtra(CONST, value)
+//            context.startActivity(showActivityIntent)
+//        }
+//
+//        companion object {
+//            private val CONST = "KEY"
+//        }
     }
 }
