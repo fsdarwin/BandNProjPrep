@@ -11,6 +11,7 @@ import retrofit2.Call
 import BooksInfo
 import Items
 import android.support.v7.widget.LinearLayoutManager
+import android.widget.EditText
 import com.example.bandnprojprep.R
 import com.example.bandnprojprep.view.RvAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     val TAG: String = "FRANK "
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RvAdapter
+    private lateinit var query: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,54 +32,38 @@ class MainActivity : AppCompatActivity() {
         linearLayoutManager = LinearLayoutManager(this)
         rv_bookView.layoutManager = linearLayoutManager
 
+        // OnClick Listener
         this.btn_search.setOnClickListener(View.OnClickListener {
-            displayProgressDialog()
+            //Set the query string
+            query = et_search_terms.text.toString()
+            // Call the API service
             callWebService()
         })
     }
 
     private fun callWebService() {
+        //Create API service object
         val apiService = ApiInterface.create()
-        val call = apiService.getBooksInfo()
-        Log.d(TAG, call.toString() + "")
+        // Make the call using the input query string
+        val call = apiService.getBooksInfo(query)
+        // Make the async call
         call.enqueue(object : Callback<BooksInfo> {
             override fun onResponse(call: Call<BooksInfo>, response: retrofit2.Response<BooksInfo>?) {
                 if (response != null) {
-                    if (pDialog != null && pDialog!!.isShowing()) {
-                        pDialog.dismiss()
-                    }
+                    // Pull the data from the response
                     val itemsList: List<Items> = response.body()!!.items
-                    Log.d("MainActivity", "" + itemsList.size)
-                    //to be taken out after debugging
-                    var msg: String = ""
-                    for (item: Items in itemsList.iterator()) {
-                        msg = msg + item.volumeInfo.title + "\n"
-                    }
-                    //see above-----------------------
+                    // Finish setting up the recyclerView
                     adapter = RvAdapter(itemsList)
                     rv_bookView.adapter = adapter
-                    //to be taken out after debugging
-                    Toast.makeText(this@MainActivity, "List of Titles  \n  " + msg, Toast.LENGTH_LONG).show()
-                    //see above-----------------------
                 }
 
             }
 
             override fun onFailure(call: Call<BooksInfo>, t: Throwable) {
-                Log.e(TAG, t.toString());
-                if (pDialog != null && pDialog.isShowing()) {
-                    pDialog.dismiss()
-                }
+                Log.e(
+                    TAG, t.toString()
+                )
             }
         })
-    }
-    lateinit var pDialog: ProgressDialog
-    private fun displayProgressDialog() {
-
-        pDialog = ProgressDialog(this@MainActivity)
-        pDialog!!.setMessage("Loading..")
-        pDialog!!.setCancelable(false)
-        pDialog!!.isIndeterminate = false
-        pDialog!!.show()
     }
 }

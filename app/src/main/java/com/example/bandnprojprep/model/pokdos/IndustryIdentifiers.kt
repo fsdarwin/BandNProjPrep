@@ -15,5 +15,5 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 data class IndustryIdentifiers (
 
 	@SerializedName("type") val type : String,
-	@SerializedName("identifier") val identifier : Int
+	@SerializedName("identifier") val identifier : String
 )

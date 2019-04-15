@@ -24,7 +24,7 @@ data class VolumeInfo (
 	@SerializedName("pageCount") val pageCount : Int,
 	@SerializedName("printType") val printType : String,
 	@SerializedName("categories") val categories : List<String>,
-	@SerializedName("averageRating") val averageRating : Int,
+	@SerializedName("averageRating") val averageRating : Float,
 	@SerializedName("ratingsCount") val ratingsCount : Int,
 	@SerializedName("maturityRating") val maturityRating : String,
 	@SerializedName("allowAnonLogging") val allowAnonLogging : Boolean,

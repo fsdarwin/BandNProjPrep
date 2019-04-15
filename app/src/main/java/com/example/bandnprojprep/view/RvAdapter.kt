@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.rv_item.view.*
 class RvAdapter(private val items: List<Items>) : RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RvAdapter.ViewHolder {
+        // See Extensions.kt for extension function
         val inflatedView = parent.inflate(R.layout.rv_item, false)
         return ViewHolder(inflatedView)
     }
@@ -51,20 +52,5 @@ class RvAdapter(private val items: List<Items>) : RecyclerView.Adapter<RvAdapter
             }
             view.tv_author.text = authors
         }
-
-//        init {
-//            v.setOnClickListener(this)
-//        }
-//for future reference
-//        override fun onClick(v: View) {
-//            val context = itemView.context
-//            val showActivityIntent = Intent(context, nextActivity::class.java)
-//            showActivityIntent.putExtra(CONST, value)
-//            context.startActivity(showActivityIntent)
-//        }
-//
-//        companion object {
-//            private val CONST = "KEY"
-//        }
     }
 }
